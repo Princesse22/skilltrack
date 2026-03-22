@@ -17,7 +17,7 @@
                 <p class="text-muted mb-4">
                     Build skills with courses, certificates, and mentors.
                 </p>
-                <a class="btn btn-primary btn-lg me-3" href="{{ url('/signup') }}">Get Started</a>
+                <a class="btn btn-primary btn-lg me-3" href="{{ route('formations.index') }}">Get Started</a>
                 <a class="btn btn-outline-secondary btn-lg" href="{{ url('/courses') }}">Explore</a>
             </div>
 

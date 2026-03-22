@@ -57,3 +57,18 @@ Route::post('/newsletter/subscribe', function () {
     // Logic to handle newsletter subscription
     return redirect()->back()->with('success', 'Successfully subscribed to newsletter!');
 })->name('newsletter.subscribe');
+
+//devenir partenaire
+Route::get('/partenaire.index',function(){
+    return view('partenaire.index');
+})->name('partenaire.index');
+// dashbord partenaire
+Route::get('/partenaire.dashboard',function(){
+    return view('partenaire.dashboard');
+})->name('partenaire.dashboard');
+
+
+//deconnexion
+Route::get('/logout', function () {
+    return view('logout');
+})->name('logout');

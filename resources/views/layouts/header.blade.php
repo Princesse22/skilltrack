@@ -7,7 +7,8 @@
     padding: 0.8rem 0;
     width: 100%;
     position: relative;
-    z-index: 100;
+    z-index: 1000;
+    overflow: visible;
 }
 
 /* ===== LIGNE 2 : menu centré ===== */
@@ -17,7 +18,12 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     width: 100%;
     position: relative;
-    z-index: 100;
+    z-index: 50;
+}
+
+/* ===== DROPDOWN PROFIL au-dessus de tout ===== */
+.top-bar .dropdown-menu {
+    z-index: 1050;
 }
 
 .nav-link {
@@ -78,10 +84,36 @@
             <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupPopupForm">
                 <i class="la la-user-plus"></i> Sign Up
             </a>
-            <a class="btn btn-outline-primary" href="{{ url('/profile') }}">
-                <i class="la la-user"></i> Profil
+<div class="dropdown">
+    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="la la-user"></i> Profil
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <a class="dropdown-item" href="{{ url('/profile/edit') }}">
+                <i class="la la-edit"></i> Modifier
             </a>
-            <a class="btn btn-outline-secondary" href="{{ url('/partner') }}">
+        </li>
+        <li>
+            <a class="dropdown-item" href="{{ route('partenaire.dashboard') }}">
+                <i class="la la-dashboard"></i> Dashboard
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="la la-sign-out"></i> Déconnexion
+            </a>
+        </li>
+    </ul>
+</div>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
+            <a class="btn btn-outline-secondary" href="{{ route('partenaire.index') }}">
                 <i class="la la-handshake"></i> Devenir partenaire
             </a>
         </div>
@@ -268,7 +300,7 @@
 
                         <!-- Username -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Username</label>
+                            <label class="label-text">Username<span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-user form-icon"></span>
                                 <input
@@ -289,7 +321,7 @@
 
                         <!-- Email Address -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Email Address</label>
+                            <label class="label-text">Email Address <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-envelope form-icon"></span>
                                 <input
@@ -310,7 +342,7 @@
 
                         <!-- Password -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Password</label>
+                            <label class="label-text">Password <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-lock form-icon"></span>
                                 <input
@@ -330,7 +362,7 @@
 
                         <!-- Repeat Password -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Repeat Password</label>
+                            <label class="label-text">Repeat Password <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-lock form-icon"></span>
                                 <input
