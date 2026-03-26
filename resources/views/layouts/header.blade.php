@@ -200,9 +200,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contact-form-action">
-                    <form method="POST" action="">
-                        {{-- {{ route('login.submit') }} --}}
+                <div class="contact-form-action" style="{{ session('showLogin') ? '' : 'display:none;' }}">
+                    <form method="POST" action="{{ route('login') }}">
+
                         @csrf
 
                         <!-- Email Address -->
@@ -281,7 +281,18 @@
 </div>
 <!-- end login modal -->
 
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
 <!-- Signup Modal Popup -->
+@if($errors->any())
+<script>
+    var signupModal = new bootstrap.Modal(document.getElementById('signupPopupForm'));
+    signupModal.show();
+</script>
+@endif
+
 <div class="modal fade" id="signupPopupForm" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -293,25 +304,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contact-form-action">
-                    <form method="POST" action="">
-                        {{-- {{ route('register') }} --}}
+                <div class="contact-form-action" style="{{ session('showLogin') ? 'display:none;' : '' }}">
+                    <form method="POST" action="{{ route('register') }}">
+
                         @csrf
 
-                        <!-- Username -->
+                        <!-- name -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Username<span class="req">*</span></label>
+                            <label class="label-text">name<span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-user form-icon"></span>
                                 <input
-                                    class="form-control @error('username') is-invalid @enderror"
+                                    class="form-control @error('name') is-invalid @enderror"
                                     type="text"
-                                    name="username"
-                                    value="{{ old('username') }}"
-                                    placeholder="Type your username"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    placeholder="Type your name"
                                     required
                                 />
-                                @error('username')
+                                @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -399,21 +410,35 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    const loginModal = document.getElementById('loginPopupForm');
-    if (loginModal) {
-        loginModal.addEventListener('shown.bs.modal', function () {
-            const firstInput = this.querySelector('input[type="email"]');
-            if (firstInput) firstInput.focus();
-        });
-    }
+    // ✅ OUVRIR LOGIN après inscription réussie
+    // session('showLogin') est défini dans register() avec ->with('showLogin', true)
+    @if(session('showLogin'))
+        new bootstrap.Modal(document.getElementById('loginPopupForm')).show();
+    @endif
 
+    // ✅ ROUVRIR LOGIN si erreur de connexion (mauvais mot de passe)
+    // old('name') est vide = c'est le formulaire login qui a échoué
+    @if($errors->any() && !old('name'))
+        new bootstrap.Modal(document.getElementById('loginPopupForm')).show();
+    @endif
+
+    // ✅ ROUVRIR SIGNUP si erreur d'inscription (email déjà pris, mdp trop court…)
+    // old('name') existe = c'est le formulaire signup qui a échoué
+    @if($errors->any() && old('name'))
+        new bootstrap.Modal(document.getElementById('signupPopupForm')).show();
+    @endif
+
+    // Focus sur email quand login s'ouvre
+    document.getElementById('loginPopupForm')?.addEventListener('shown.bs.modal', function () {
+        this.querySelector('input[type="email"]')?.focus();
+    });
+
+    // Focus + reset signup
     const signupModal = document.getElementById('signupPopupForm');
     if (signupModal) {
         signupModal.addEventListener('shown.bs.modal', function () {
-            const firstInput = this.querySelector('input[type="text"]');
-            if (firstInput) firstInput.focus();
+            this.querySelector('input[type="text"]')?.focus();
         });
-
         signupModal.addEventListener('hidden.bs.modal', function () {
             const form = this.querySelector('form');
             if (form) {

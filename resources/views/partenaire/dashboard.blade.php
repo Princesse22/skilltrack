@@ -461,7 +461,7 @@ html,body{height:100%;font-family:var(--font);background:var(--gray-50);color:va
         </button>
         <button class="btn-icon" title="Messages">💬</button>
 
-        <a href="{{ route('formations.index') }}" class="btn-new">
+        <a href="{{ route('partenaire.index') }}" class="btn-new">
             ＋ Nouvelle formation
         </a>
     </div>

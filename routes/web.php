@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UsersController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,13 +34,15 @@ Route::get('/blog', function () {
     return view('blog');
 })->name('blog');
 
-// Route::get('/login', function () {
-//     return view('auth.login');
-// })->name('login');
+Route::get('register-login', [UsersController::class, 'showRegisterLogin'])->name('register-login');
+ Route::post('/register',[UsersController::class, 'register'])->name('register');
+ Route::post('login', [UsersController::class, 'login'])->name('login');
 
-// Route::get('/signup', function () {
-//     return view('auth.signup');
-// })->name('signup');
+ // code de verification via mail
+
+Route::get('/auth/emailVerify', [UsersController::class, 'emailVerify'])->name('auth.emailVerify');
+ // Vérification du code saisi par l'utilisateur
+Route::post('/auth/verifyCode', [UsersController::class, 'verifyCode'])->name('auth.verifyCode');
 
 Route::get('/profile', function () {
     return view('profile');

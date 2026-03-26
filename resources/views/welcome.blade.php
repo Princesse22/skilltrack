@@ -4,6 +4,14 @@
 
 @section('content')
 
+@if(session('showLogin'))
+<script>
+    var loginModal = new bootstrap.Modal(document.getElementById('loginPopupForm'));
+    loginModal.show();
+</script>
+@endif
+
+
 <!-- ================= HERO ================= -->
 <section class="hero">
     <div class="container">
