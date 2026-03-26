@@ -6,9 +6,10 @@
 <title>SkillTract – Vérification</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
 <style>
-    *{
-
-    }
+    body {
+    overflow: hidden;
+     height: auto;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0a0e1a;
@@ -154,9 +155,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 
 /* ── TIMER ── */
 .timer-row{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.4rem}
-.timer-ring{
-  width:40px;height:40px;flex-shrink:0;
-}
+.timer-ring{width:40px;height:40px;flex-shrink:0;}
 .timer-ring svg{transform:rotate(-90deg)}
 .timer-ring circle.bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:3}
 .timer-ring circle.fg{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-dasharray:100;transition:stroke-dashoffset .9s linear,stroke .3s}
@@ -246,46 +245,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 </style>
 </head>
 <body>
-    <form method="POST" action="{{ route('auth.verifyCode') }}">
-
-        <div class="bg"></div>
-<div class="bg-grid"></div>
-
-<div class="page">
-  <div class="card">
-
-    <!-- Logo -->
-    <div class="logo-row">
-      <div class="logo-mark">ST</div>
-      <div class="logo-text">Skill<span>Tract</span></div>
-    </div>
-
-    <!-- Icône bouclier -->
-    <div class="shield-wrap">
-      <div class="shield" id="shieldIcon">🔐</div>
-    </div>
-
-    <!-- Titre -->
-    <div class="heading">
-      <h1>Vérification en deux étapes</h1>
-      <p>Un code de vérification a été envoyé à</p>
-      <span class="user-email" id="userEmail">a***@gmail.com</span>
-    </div>
-
-    <!-- Toggle méthode -->
-    <div class="method-toggle" id="methodToggle">
-      <button class="mt-btn active" onclick="switchMethod('email',this)">✉️ Email</button>
-      <button class="mt-btn" onclick="switchMethod('sms',this)">📱 SMS</button>
-    </div>
-
-    <!-- Envoyé -->
-    <div class="sent-label">
-      <div class="sent-dot"></div>
-      <span id="sentLabel">Code envoyé par email · Valable 5 minutes</span>
-    </div>
-
-    <!-- Label OTP -->
-    <div class="otp-label">Entrez votre code à 6 chiffres</div>
 
 <div class="bg"></div>
 <div class="bg-grid"></div>
@@ -308,13 +267,13 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     <div class="heading">
       <h1>Vérification en deux étapes</h1>
       <p>Un code de vérification a été envoyé à</p>
-      <span class="user-email" id="userEmail">a***@gmail.com</span>
+      <span class="user-email" id="userEmail">{{ $user->email }}</span>
     </div>
 
     <!-- Toggle méthode -->
     <div class="method-toggle" id="methodToggle">
-      <button class="mt-btn active" onclick="switchMethod('email',this)">✉️ Email</button>
-      <button class="mt-btn" onclick="switchMethod('sms',this)">📱 SMS</button>
+      <button type="button" class="mt-btn active" onclick="switchMethod('email',this)">✉️ Email</button>
+      <button type="button" class="mt-btn" onclick="switchMethod('sms',this)">📱 SMS</button>
     </div>
 
     <!-- Envoyé -->
@@ -326,8 +285,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     <!-- Label OTP -->
     <div class="otp-label">Entrez votre code à 6 chiffres</div>
 
-    <!-- Inputs OTP -->
-    @csrf
+    <!-- Inputs OTP — PAS de <form> ici, le JS crée son propre formulaire -->
     <div class="otp-wrap">
       <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="d0" autocomplete="one-time-code">
       <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="d1">
@@ -360,14 +318,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     <div class="state-msg hidden" id="stateMsg"></div>
 
     <!-- Bouton vérifier -->
-    <button class="btn-verify" id="btnVerify" onclick="verifyCode()" disabled>
+    <button type="button" class="btn-verify" id="btnVerify" onclick="verifyCode()" disabled>
       <span class="btn-text">🔓 Vérifier le code</span>
       <div class="spinner"><div class="spin"></div></div>
     </button>
 
     <!-- Renvoyer -->
     <div class="resend-row">
-      <button class="btn-resend" id="btnResend" disabled onclick="resendCode()">
+      <button type="button" class="btn-resend" id="btnResend" disabled onclick="resendCode()">
         Renvoyer le code <span id="resendTimer">(5:00)</span>
       </button>
     </div>
@@ -391,16 +349,13 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
   </div>
 </div>
 
- </form>
 <script>
 /* ═══════ CONFIG ═══════ */
-const VALID_CODE = '123456'; // code de démonstration
-const TOTAL_TIME = 300; // 5 minutes en secondes
+const TOTAL_TIME = 300;
 let timeLeft = TOTAL_TIME;
 let timerInterval = null;
 let resendTimerInterval = null;
 let attempts = 0;
-const MAX_ATTEMPTS = 3;
 let currentMethod = 'email';
 
 const inputs = Array.from({length:6},(_,i)=>document.getElementById('d'+i));
@@ -415,24 +370,12 @@ inputs.forEach((inp,i)=>{
     if(val) inp.classList.add('filled');
     else     inp.classList.remove('filled');
 
-    // Avancer auto
     if(val && i<5) inputs[i+1].focus();
 
-    // Coller depuis presse-papier (6 chiffres)
     updateProgress();
     checkAllFilled();
   });
-    // Quand l’utilisateur tape dans les cases, on concatène et met dans le champ caché
-    const inputs = document.querySelectorAll('.otp-input');
-    const finalCode = document.getElementById('finalCode');
 
-    inputs.forEach(input => {
-        input.addEventListener('input', () => {
-            let code = '';
-            inputs.forEach(i => code += i.value);
-            finalCode.value = code;
-        });
-    });
   inp.addEventListener('keydown', e=>{
     if(e.key==='Backspace' && !inp.value && i>0){
       inputs[i-1].focus();
@@ -459,7 +402,6 @@ inputs.forEach((inp,i)=>{
     }
   });
 
-  // Focus style
   inp.addEventListener('focus',()=>inp.select());
 });
 
@@ -495,7 +437,6 @@ function startTimer(){
     }
   },1000);
 
-  // Resend countdown (même timer)
   let resendLeft = TOTAL_TIME;
   resendTimerInterval = setInterval(()=>{
     resendLeft--;
@@ -512,66 +453,47 @@ function startTimer(){
 function updateTimerDisplay(){
   const m = Math.floor(timeLeft/60);
   const s = timeLeft%60;
-  const display = `${m}:${s.toString().padStart(2,'0')}`;
-  document.getElementById('timerDisplay').textContent = display;
+  document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
 
-  // Cercle SVG
   const circle = document.getElementById('timerCircle');
   const pct = timeLeft/TOTAL_TIME;
-  const offset = 100 - (pct*100);
-  circle.style.strokeDashoffset = offset;
+  circle.style.strokeDashoffset = 100 - (pct*100);
 
-  // Couleur selon urgence
-  if(timeLeft<=60)      circle.style.stroke='#ef4444';
+  if(timeLeft<=60)       circle.style.stroke='#ef4444';
   else if(timeLeft<=120) circle.style.stroke='#f59e0b';
   else                   circle.style.stroke='#3b82f6';
 
-  // Texte timer
   const timerTxt = document.querySelector('.timer-text strong');
-  if(timeLeft<=60) timerTxt.style.color='#fca5a5';
+  if(timeLeft<=60)       timerTxt.style.color='#fca5a5';
   else if(timeLeft<=120) timerTxt.style.color='#fcd34d';
-  else timerTxt.style.color='var(--white)';
+  else                   timerTxt.style.color='var(--white)';
 }
 
 /* ═══════ VÉRIFICATION ═══════ */
 function verifyCode(){
-    const code = getCode();
-    if(code.length !== 6) return;
+  const code = getCode();
+  if(code.length !== 6) return;
 
-    btnVerify.classList.add('loading');
-    inputs.forEach(i => i.disabled = true);
+  btnVerify.classList.add('loading');
 
-    // ✅ Appel Laravel au lieu de comparer en JS
-    fetch('{{ route("auth.verifyCode") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ code: code })
-    })
-    .then(res => res.json())
-    .then(data => {
-        btnVerify.classList.remove('loading');
-        inputs.forEach(i => i.disabled = false);
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '{{ route("auth.verifyCode") }}';
 
-        if (data.success) {
-            inputs.forEach(i => i.classList.add('success'));
-            showState('success', '✅ Identité vérifiée !');
-            setTimeout(() => {
-                document.getElementById('successOverlay').classList.add('show');
-                setTimeout(() => { window.location.href = '{{ route("welcome") }}'; }, 3000);
-            }, 600);
-        } else {
-            attempts++;
-            inputs.forEach(i => { i.classList.add('error'); i.value = ''; });
-            setTimeout(() => inputs.forEach(i => i.classList.remove('error')), 500);
-            showState('error', '❌ ' + data.message);
-            inputs[0].focus();
-            btnVerify.disabled = true;
-            updateProgress();
-        }
-    });
+  const csrf = document.createElement('input');
+  csrf.type  = 'hidden';
+  csrf.name  = '_token';
+  csrf.value = '{{ csrf_token() }}';
+
+  const codeField = document.createElement('input');
+  codeField.type  = 'hidden';
+  codeField.name  = 'code';
+  codeField.value = code;
+
+  form.appendChild(csrf);
+  form.appendChild(codeField);
+  document.body.appendChild(form);
+  form.submit();
 }
 
 /* ═══════ RENVOYER ═══════ */
@@ -602,10 +524,8 @@ function switchMethod(method, btn){
   const email = document.getElementById('userEmail');
   const label = document.getElementById('sentLabel');
   if(method==='email'){
-    email.textContent='a***@gmail.com';
     label.textContent='Code envoyé par email · Valable 5 minutes';
   } else {
-    email.textContent='+237 6** *** 456';
     label.textContent='Code envoyé par SMS · Valable 5 minutes';
   }
 }
@@ -623,7 +543,6 @@ function hideState(){
 startTimer();
 setTimeout(()=>inputs[0].focus(),200);
 
-/* Raccourci : Entrée pour vérifier */
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!btnVerify.disabled) verifyCode();
 });

@@ -13,6 +13,12 @@ class UsersController extends Controller
 {
     public function showRegisterLogin()
     {
+            $user = Users::find(session('verify_user_id'));
+
+    if (!$user) {
+        return redirect()->route('welcome')
+            ->with('error', 'Session expirée.');
+    }
         return view('welcome');
     }
 
@@ -29,12 +35,13 @@ class UsersController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+        session(['verify_user_id' => $users->id]);
 
         // Generer le code aléatoire
         $code = rand(100000, 999999);
 
         // Expirer après 5 minutes
-        $expiration = now()->addMinutes(5);
+        $expiration = now()->addMinutes(10);
 
         // Enregistrer le code et l'expiration dans la base de données
         $users->verification_code = $code;
@@ -48,8 +55,13 @@ class UsersController extends Controller
     }
 public function verifyCode(Request $request)
 {
-    $user = Auth::user();
-    $code = $request->input('code'); // string
+    $user = users::find(session('verify_user_id'));
+
+    if (!$user) {
+        return redirect()->route('welcome')->with('error', 'Session expirée.');
+    }
+
+    $code = $request->input('code');
 
     if ((string)$user->verification_code === (string)$code
         && now()->lessThan($user->code_expires_at)) {
@@ -59,7 +71,8 @@ public function verifyCode(Request $request)
         $user->code_expires_at = null;
         $user->save();
 
-        return redirect()->route('welcome')->with('success', 'Votre identité a été vérifiée !');
+        return redirect()->route('welcome')
+            ->with('success', 'Votre identité a été vérifiée !');
     }
 
     return back()->withErrors(['code' => 'Code incorrect ou expiré.']);
@@ -82,11 +95,16 @@ public function verifyCode(Request $request)
         return back()->withErrors(['email' => 'Email ou mot de passe incorrect.']);
     }
 
-    public function emailVerify()
-    {
-        return view('auth.emailVerify');
+public function emailVerify()
+{
+    $user = users::find(session('verify_user_id'));
+
+    if (!$user) {
+        return redirect()->route('welcome')->with('error', 'Session expirée.');
     }
 
+    return view('auth.emailVerify', compact('user'));
+}
     // Les méthodes suivantes sont vides par défaut, vous pouvez les remplir selon vos besoins
 
     public function index()

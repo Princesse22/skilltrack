@@ -78,41 +78,47 @@
 
         <!-- Boutons d'action desktop -->
         <div class="d-none d-lg-flex align-items-center gap-2">
-            <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginPopupForm">
-                <i class="la la-sign-in"></i> Login
-            </a>
-            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupPopupForm">
-                <i class="la la-user-plus"></i> Sign Up
-            </a>
-<div class="dropdown">
-    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="la la-user"></i> Profil
-    </a>
 
-    <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-            <a class="dropdown-item" href="{{ url('/profile/edit') }}">
-                <i class="la la-edit"></i> Modifier
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('partenaire.dashboard') }}">
-                <i class="la la-dashboard"></i> Dashboard
-            </a>
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-            <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="la la-sign-out"></i> Déconnexion
-            </a>
-        </li>
-    </ul>
-</div>
+            @guest
+                {{-- Utilisateur NON connecté : afficher Login et Sign Up --}}
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginPopupForm">
+                    <i class="la la-sign-in"></i> Login
+                </a>
+                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupPopupForm">
+                    <i class="la la-user-plus"></i> Sign Up
+                </a>
+            @else
+                {{-- Utilisateur connecté : afficher Profil et Déconnexion --}}
+                <div class="dropdown">
+                    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="la la-user"></i> {{ Auth::user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{{ url('/profile/edit') }}">
+                                <i class="la la-edit"></i> Modifier
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('partenaire.dashboard') }}">
+                                <i class="la la-dashboard"></i> Dashboard
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="la la-sign-out"></i> Déconnexion
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-    @csrf
-</form>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            @endguest
+
             <a class="btn btn-outline-secondary" href="{{ route('partenaire.index') }}">
                 <i class="la la-handshake"></i> Devenir partenaire
             </a>
@@ -172,16 +178,23 @@
             </li>
         </ul>
         <div class="d-flex flex-column gap-2">
-            <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginPopupForm">
-                <i class="la la-sign-in"></i> Login
-            </a>
-            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupPopupForm">
-                <i class="la la-user-plus"></i> Sign Up
-            </a>
-            <a class="btn btn-outline-primary" href="{{ url('/profile') }}">
-                <i class="la la-user"></i> Profil
-            </a>
-            <a class="btn btn-outline-secondary" href="{{ url('/partner') }}">
+            @guest
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginPopupForm">
+                    <i class="la la-sign-in"></i> Login
+                </a>
+                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupPopupForm">
+                    <i class="la la-user-plus"></i> Sign Up
+                </a>
+            @else
+                <a class="btn btn-outline-primary" href="{{ url('/profile/edit') }}">
+                    <i class="la la-user"></i> Profil
+                </a>
+                <a class="btn btn-danger" href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="la la-sign-out"></i> Déconnexion
+                </a>
+            @endguest
+            <a class="btn btn-outline-secondary" href="{{ route('partenaire.index') }}">
                 <i class="la la-handshake"></i> Devenir partenaire
             </a>
         </div>
@@ -189,6 +202,7 @@
 </div>
 
 <!-- Login Modal Popup -->
+@guest
 <div class="modal fade" id="loginPopupForm" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -200,74 +214,35 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contact-form-action" style="{{ session('showLogin') ? '' : 'display:none;' }}">
+                <div class="contact-form-action">
                     <form method="POST" action="{{ route('login') }}">
-
                         @csrf
-
-                        <!-- Email Address -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Email Address</label>
+                            <label class="label-text">Email Address <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-envelope form-icon"></span>
-                                <input
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    type="email"
-                                    name="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="Type your email"
-                                    required
-                                />
+                                <input class="form-control @error('email') is-invalid @enderror"
+                                    type="email" name="email" value="{{ old('email') }}"
+                                    placeholder="Type your email" required />
                                 @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
                             </div>
                         </div>
-
-                        <!-- Password -->
                         <div class="input-box mb-3">
-                            <label class="label-text">Password</label>
+                            <label class="label-text">Password <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-lock form-icon"></span>
-                                <input
-                                    class="form-control @error('password') is-invalid @enderror"
-                                    type="password"
-                                    name="password"
-                                    placeholder="Type your password"
-                                    required
-                                />
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                <input class="form-control" type="password" name="password"
+                                    placeholder="Type password" required />
                             </div>
                         </div>
-
-                        <!-- Remember Me -->
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">
-                                Remember Me
-                            </label>
-                        </div>
-
-                        <!-- Submit Button -->
                         <div class="btn-box pt-3 pb-4">
-                            <button type="submit" class="theme-btn w-100">
-                                Login
-                            </button>
+                            <button type="submit" class="theme-btn w-100">Login</button>
                         </div>
-
-                        <!-- Forgot Password -->
                         <div class="text-center mb-3">
                             <a href="" class="text-primary">Forgot Password?</a>
-                            {{-- {{ route('password.request') }} --}}
                         </div>
-
-                        <!-- Sign Up Link -->
                         <div class="text-center">
                             <p class="font-size-14">Don't have an account?
                                 <a href="#" class="text-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#signupPopupForm">Sign Up</a>
@@ -279,20 +254,8 @@
         </div>
     </div>
 </div>
-<!-- end login modal -->
-
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <!-- Signup Modal Popup -->
-@if($errors->any())
-<script>
-    var signupModal = new bootstrap.Modal(document.getElementById('signupPopupForm'));
-    signupModal.show();
-</script>
-@endif
-
 <div class="modal fade" id="signupPopupForm" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -306,94 +269,53 @@
             <div class="modal-body">
                 <div class="contact-form-action" style="{{ session('showLogin') ? 'display:none;' : '' }}">
                     <form method="POST" action="{{ route('register') }}">
-
                         @csrf
-
-                        <!-- name -->
                         <div class="input-box mb-3">
                             <label class="label-text">name<span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-user form-icon"></span>
-                                <input
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    type="text"
-                                    name="name"
-                                    value="{{ old('name') }}"
-                                    placeholder="Type your name"
-                                    required
-                                />
+                                <input class="form-control @error('name') is-invalid @enderror"
+                                    type="text" name="name" value="{{ old('name') }}"
+                                    placeholder="Type your name" required />
                                 @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
                             </div>
                         </div>
-
-                        <!-- Email Address -->
                         <div class="input-box mb-3">
                             <label class="label-text">Email Address <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-envelope form-icon"></span>
-                                <input
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    type="email"
-                                    name="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="Type your email"
-                                    required
-                                />
+                                <input class="form-control @error('email') is-invalid @enderror"
+                                    type="email" name="email" value="{{ old('email') }}"
+                                    placeholder="Type your email" required />
                                 @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
                             </div>
                         </div>
-
-                        <!-- Password -->
                         <div class="input-box mb-3">
                             <label class="label-text">Password <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-lock form-icon"></span>
-                                <input
-                                    class="form-control @error('password') is-invalid @enderror"
-                                    type="password"
-                                    name="password"
-                                    placeholder="Type password"
-                                    required
-                                />
+                                <input class="form-control @error('password') is-invalid @enderror"
+                                    type="password" name="password" placeholder="Type password" required />
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
                             </div>
                         </div>
-
-                        <!-- Repeat Password -->
                         <div class="input-box mb-3">
                             <label class="label-text">Repeat Password <span class="req">*</span></label>
                             <div class="form-group">
                                 <span class="la la-lock form-icon"></span>
-                                <input
-                                    class="form-control"
-                                    type="password"
-                                    name="password_confirmation"
-                                    placeholder="Type again password"
-                                    required
-                                />
+                                <input class="form-control" type="password" name="password_confirmation"
+                                    placeholder="Type again password" required />
                             </div>
                         </div>
-
-                        <!-- Submit Button -->
                         <div class="btn-box pt-3 pb-4">
-                            <button type="submit" class="theme-btn w-100">
-                                Register Account
-                            </button>
+                            <button type="submit" class="theme-btn w-100">Register Account</button>
                         </div>
-
-                        <!-- Login Link -->
                         <div class="text-center">
                             <p class="font-size-14">Already have an account?
                                 <a href="#" class="text-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginPopupForm">Login</a>
@@ -405,41 +327,42 @@
         </div>
     </div>
 </div>
-<!-- end signup modal -->
+@endguest
+
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ✅ OUVRIR LOGIN après inscription réussie
-    // session('showLogin') est défini dans register() avec ->with('showLogin', true)
     @if(session('showLogin'))
         new bootstrap.Modal(document.getElementById('loginPopupForm')).show();
     @endif
 
-    // ✅ ROUVRIR LOGIN si erreur de connexion (mauvais mot de passe)
-    // old('name') est vide = c'est le formulaire login qui a échoué
     @if($errors->any() && !old('name'))
-        new bootstrap.Modal(document.getElementById('loginPopupForm')).show();
+        var loginModal = document.getElementById('loginPopupForm');
+        if(loginModal) new bootstrap.Modal(loginModal).show();
     @endif
 
-    // ✅ ROUVRIR SIGNUP si erreur d'inscription (email déjà pris, mdp trop court…)
-    // old('name') existe = c'est le formulaire signup qui a échoué
     @if($errors->any() && old('name'))
-        new bootstrap.Modal(document.getElementById('signupPopupForm')).show();
+        var signupModal = document.getElementById('signupPopupForm');
+        if(signupModal) new bootstrap.Modal(signupModal).show();
     @endif
 
-    // Focus sur email quand login s'ouvre
-    document.getElementById('loginPopupForm')?.addEventListener('shown.bs.modal', function () {
-        this.querySelector('input[type="email"]')?.focus();
-    });
+    var loginModalEl = document.getElementById('loginPopupForm');
+    if(loginModalEl){
+        loginModalEl.addEventListener('shown.bs.modal', function () {
+            this.querySelector('input[type="email"]')?.focus();
+        });
+    }
 
-    // Focus + reset signup
-    const signupModal = document.getElementById('signupPopupForm');
-    if (signupModal) {
-        signupModal.addEventListener('shown.bs.modal', function () {
+    var signupModalEl = document.getElementById('signupPopupForm');
+    if(signupModalEl){
+        signupModalEl.addEventListener('shown.bs.modal', function () {
             this.querySelector('input[type="text"]')?.focus();
         });
-        signupModal.addEventListener('hidden.bs.modal', function () {
+        signupModalEl.addEventListener('hidden.bs.modal', function () {
             const form = this.querySelector('form');
             if (form) {
                 form.reset();
