@@ -23,6 +23,7 @@ return new class extends Migration
         $table->boolean('is_verified')->default(false);
         // Optionnel : expiration du code
         $table->timestamp('code_expires_at')->nullable();
+        $table->enum('role', ['user', 'formateur', 'admin'])->default('user');
         $table->timestamps();
     });
 }

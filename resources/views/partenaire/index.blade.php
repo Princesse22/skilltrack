@@ -485,9 +485,13 @@ function updateProgress(){
   if(current === TOTAL-1){
     btn.innerHTML = '🚀 Soumettre la formation';
     btn.className = 'btn-next btn-submit';
+    btn.name = 'soumettre_formation'; // Ajout du name
+    btn.value = 'true'; // Ajout de la valeur
   } else {
     btn.innerHTML = 'Continuer <span>→</span>';
     btn.className = 'btn-next';
+    btn.removeAttribute('name'); // Supprime l'attribut name quand ce n'est pas le bouton submit
+    btn.removeAttribute('value'); // Supprime l'attribut value
   }
 }
 
@@ -532,19 +536,26 @@ function step1(){ return `
       <div class="fg">
         <label>Nom complet <span class="req">*</span></label>
         <div class="input-wrap"><span class="input-icon">👤</span>
-          <input type="text" id="f_nom" placeholder="Ex : Jean-Paul Mbarga" value="${fv('f_nom')}">
+          <input type="text" id="f_nom" placeholder="Ex : Jean-Paul Mbarga" value="${fv('f_nom')}" name="nom">
         </div>
       </div>
       <div class="fg">
         <label>Email <span class="req">*</span></label>
         <div class="input-wrap"><span class="input-icon">✉️</span>
-          <input type="email" id="f_email" placeholder="exemple@email.com" value="${fv('f_email')}">
+          <input type="email" id="f_email" placeholder="exemple@email.com" value="${fv('f_email')}" name="email">
         </div>
       </div>
+<div class="fg">
+    <label>Date de naissance <span class="req">*</span></label>
+    <div class="input-wrap">
+        <span class="input-icon">📅</span>
+        <input type="date" id="date_naissance" placeholder="jj/mm/aaaa" value="${fv('date_naissance')}" name="date_naissance">
+    </div>
+</div>
       <div class="fg">
         <label>Numéro de téléphone <span class="req">*</span></label>
         <div class="input-wrap"><span class="input-icon">📱</span>
-          <input type="tel" id="f_tel" placeholder="+237 6XX XXX XXX" value="${fv('f_tel')}">
+          <input type="tel" id="f_tel" placeholder="+237 6XX XXX XXX" value="${fv('f_tel')}" name="tel">
         </div>
       </div>
       <div class="fg">

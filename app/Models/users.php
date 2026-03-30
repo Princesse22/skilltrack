@@ -13,6 +13,7 @@ class users extends Authenticatable
         'password',
         'remember_token',
         'verification_code',
+        'role',
         'is_verified',
         'code_expires_at',
     ];
@@ -27,4 +28,23 @@ class users extends Authenticatable
     'password' => 'hashed',
     ];
 
+}
+
+class User extends Authenticatable
+{
+    public function formateur()
+    {
+        return $this->hasOne(Formateur::class);
+    }
+
+    public function estFormateur()
+    {
+        return $this->formateur && $this->formateur->statut === 'valide';
+    }
+
+    public function formations()
+    {
+        // Accéder aux formations via le formateur
+        return $this->hasOneThrough(Formation::class, Formateur::class);
+    }
 }

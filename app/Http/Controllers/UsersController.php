@@ -40,7 +40,7 @@ class UsersController extends Controller
         // Generer le code aléatoire
         $code = rand(100000, 999999);
 
-        // Expirer après 5 minutes
+        // Expirer après 10 minutes
         $expiration = now()->addMinutes(10);
 
         // Enregistrer le code et l'expiration dans la base de données
@@ -94,6 +94,17 @@ public function verifyCode(Request $request)
 
         return back()->withErrors(['email' => 'Email ou mot de passe incorrect.']);
     }
+    // si l'utilisateur n'est pas connecter, on le renvoie sur le formulaire de connexion. pour avoir acces a devenir partenaire
+public function btnPartenaire(Request $request)
+{
+    if (!auth()->check() && $request->input('partenaire')) {
+        return redirect()->route('welcome')->with('showlogin', true);
+    } else {
+        //sinon, on le renvoie sur partenaire.index
+        return redirect()->route('partner.index');
+    }
+}
+
 
 public function emailVerify()
 {

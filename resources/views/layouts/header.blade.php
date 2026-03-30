@@ -119,7 +119,7 @@
                 </form>
             @endguest
 
-            <a class="btn btn-outline-secondary" href="{{ route('partenaire.index') }}">
+            <a class="btn btn-outline-secondary" href="{{ route('partenaire.index') }}" name="partenaire">
                 <i class="la la-handshake"></i> Devenir partenaire
             </a>
         </div>
