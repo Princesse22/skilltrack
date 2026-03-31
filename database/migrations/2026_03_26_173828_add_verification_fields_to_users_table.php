@@ -11,7 +11,7 @@ return new class extends Migration
      */
 public function up()
 {
-    Schema::table('users', function (Blueprint $table) {
+    Schema::table('User', function (Blueprint $table) {
 
 
         $table->boolean('is_verified')->default(false);
@@ -24,7 +24,7 @@ public function up()
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('User', function (Blueprint $table) {
             //
         });
     }

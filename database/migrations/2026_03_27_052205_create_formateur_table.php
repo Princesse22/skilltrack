@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('formateur', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained('User')->onDelete('cascade');
             $table->string('nom');
             $table->string('phone');
             $table->string('photo_profil');

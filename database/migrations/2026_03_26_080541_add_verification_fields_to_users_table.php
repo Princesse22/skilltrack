@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::table('users', function (Blueprint $table) {
+      Schema::table('User', function (Blueprint $table) {
     $table->string('verification_code')->nullable();
     $table->timestamp('code_expires_at')->nullable();
     });
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('User', function (Blueprint $table) {
             //
         });
     }
