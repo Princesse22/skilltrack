@@ -100,7 +100,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('partenaire.dashboard') }}">
+                            <a class="dropdown-item" href="{{ route('dashboard') }}">
                                 <i class="la la-dashboard"></i> Dashboard
                             </a>
                         </li>

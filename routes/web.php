@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,6 +71,19 @@ Route::get('/partenaire.index',function(){
 Route::get('/partenaire.dashboard',function(){
     return view('partenaire.dashboard');
 })->name('partenaire.dashboard');
+
+Route::get('/user.dashborad',function(){
+    return view('user.dashboard');
+})->name('user.dashborad');
+
+Route::get('/admin.dashboard',function(){
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+Route::get('/dashboard', [RoleController::class, 'redirectDashboard'])
+    ->middleware('auth')
+    ->name('dashboard');
+
 
 
 //deconnexion
