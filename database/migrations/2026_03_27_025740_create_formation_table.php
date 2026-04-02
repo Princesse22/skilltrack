@@ -28,7 +28,7 @@ return new class extends Migration
             $table->integer('nombre_lecons');
             $table->longText('programme');
             $table->enum('langue',['Français,','Anglais','Français, & Anglais','autre']);
-            $table->foreingId(formateur_id)->constrained('Users');
+            $table->foreignId('formateur_id')->constrained('User');
             $table->timestamps();
         });
     }

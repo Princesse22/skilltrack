@@ -74,7 +74,7 @@ Route::get('/partenaire.dashboard',function(){
 
 Route::get('/user.dashborad',function(){
     return view('user.dashboard');
-})->name('user.dashborad');
+})->name('user.dashboard');
 
 Route::get('/admin.dashboard',function(){
     return view('admin.dashboard');
@@ -87,6 +87,5 @@ Route::get('/dashboard', [RoleController::class, 'redirectDashboard'])
 
 
 //deconnexion
-Route::get('/logout', function () {
-    return view('logout');
-})->name('logout');
+Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
+

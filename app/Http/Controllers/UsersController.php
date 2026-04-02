@@ -13,7 +13,7 @@ class UsersController extends Controller
 {
     public function showRegisterLogin()
     {
-            $user = Users::find(session('verify_user_id'));
+            $user = User::find(session('verify_user_id'));
 
     if (!$user) {
         return redirect()->route('welcome')
@@ -26,9 +26,8 @@ class UsersController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:User,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'role' => 'required',
         ]);
 
         $User = User::create([
@@ -118,6 +117,15 @@ public function emailVerify()
 
     return view('auth.emailVerify', compact('user'));
 }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request ->session()->regenerateToken();
+        return redirect()->route('welcome');
+
+    }
     // Les méthodes suivantes sont vides par défaut, vous pouvez les remplir selon vos besoins
 
     public function index()

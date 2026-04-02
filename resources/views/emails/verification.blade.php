@@ -7,7 +7,7 @@
     <title>code de verification</title>
 </head>
 <body>
-<p>bonjour Mr./Mme <strong>{{ $users->name }}</strong> ,</p>
+<p>bonjour Mr./Mme <strong>{{ $User->name }}</strong> ,</p>
 <p>votre code de verification et: <b>{{ $code }}.</b></p>
 <p>Il est valide pendant 5 minutes.</p>
 <p>Merci!</p>
