@@ -83,9 +83,34 @@ Route::get('/admin.dashboard',function(){
 Route::get('/dashboard', [RoleController::class, 'redirectDashboard'])
     ->middleware('auth')
     ->name('dashboard');
+    //prendre une formation
+Route::get('/admin/formation/{id}', [AdminController::class, 'voirFormation'])
+     ->name('admin.formation.detail')
+     ->middleware('auth');
 
-
+//route pour remplir la formation
+Route::get('/formations.editerformation', function()
+{
+    return view('formations.editerformation');
+})->name('formations.editerformation');
 
 //deconnexion
 Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
 
+// Voir détail formation
+Route::get('/admin/formation/{id}', [AdminController::class, 'voirFormation'])
+     ->name('admin.formation.detail')
+     ->middleware('auth');
+
+// ✅ AJOUTER — Valider une formation
+Route::post('/admin/formation/{id}/valider', [AdminController::class, 'valideFormation'])
+     ->name('admin.formation.valider')
+     ->middleware('auth');
+
+// ✅ AJOUTER — Rejeter une formation
+Route::post('/admin/formation/{id}/rejeter', [AdminController::class, 'rejeterFormation'])
+     ->name('admin.formation.rejeter')
+     ->middleware('auth');
+
+// ✅ AJOUTER — l'import du AdminController en haut du fichier
+use App\Http\Controllers\AdminController;

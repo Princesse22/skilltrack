@@ -830,10 +830,10 @@ document.getElementById('fc-grid').innerHTML=formationsData.map(f=>`
 
 /* Validations */
 document.getElementById('validation-list').innerHTML=[
-  {title:'Bureautique Avancée',formateur:'Kevin Brice',cat:'Bureautique',lecons:12,duree:'24h',prix:'35 000 F',date:'18/03/2026'},
-  {title:'Dev Web React',formateur:'Luc Martin',cat:'Développement Web',lecons:15,duree:'30h',prix:'50 000 F',date:'17/03/2026'},
-  {title:'Excel Avancé',formateur:'Fatou Aw',cat:'Bureautique',lecons:8,duree:'16h',prix:'25 000 F',date:'15/03/2026'},
-  {title:'SEO & Google Ads',formateur:'Paul Tchamba',cat:'Marketing Digital',lecons:10,duree:'20h',prix:'40 000 F',date:'12/03/2026'},
+  {id:1, title:'Bureautique Avancée', formateur:'Kevin Brice', cat:'Bureautique', lecons:12, duree:'24h', prix:'35 000 F', date:'18/03/2026'},
+  {id:2, title:'Dev Web React', formateur:'Luc Martin', cat:'Développement Web', lecons:15, duree:'30h', prix:'50 000 F', date:'17/03/2026'},
+  {id:3, title:'Excel Avancé', formateur:'Fatou Aw', cat:'Bureautique', lecons:8, duree:'16h', prix:'25 000 F', date:'15/03/2026'},
+  {id:4, title:'SEO & Google Ads', formateur:'Paul Tchamba', cat:'Marketing Digital', lecons:10, duree:'20h', prix:'40 000 F', date:'12/03/2026'},
 ].map(v=>`
   <div class="card">
     <div class="card-hdr">
@@ -851,11 +851,11 @@ document.getElementById('validation-list').innerHTML=[
       <div style="display:flex;gap:.6rem">
         <button class="btn btn-success">✅ Valider la formation</button>
         <button class="btn btn-danger">❌ Rejeter</button>
-        <button class="btn btn-ghost">👁 Voir le contenu complet</button>
+        <a href="/admin/formation/detail/${v.id}" class="btn btn-ghost">👁 Voir le contenu complet</a>
       </div>
     </div>
-  </div>`).join('');
 
+  </div>`).join('');
 /* Apprenants table */
 document.getElementById('tbl-apprenants').innerHTML=`<thead><tr><th>Apprenant</th><th>Email</th><th>Formation(s)</th><th>Progression</th><th>Score</th><th>Inscription</th><th>Statut</th></tr></thead><tbody>`+
   usersData.filter(u=>u.role==='Apprenant').concat(Array(4).fill(null).map((_,i)=>({av:['RN','BB','EC','TF'][i],c:['#0d9488','#7c3aed','#ea580c','#16a34a'][i],name:['Rachel Ndong','Boris Bika','Emma Choupo','Thierry Fon'][i],email:[`rnd@cm.com`,`bori@g.com`,`em@fr.com`,`thfon@cm.com`][i],date:['08/03','06/03','04/03','02/03'][i],role:'Apprenant',status:'active'}))).map(u=>`<tr>
