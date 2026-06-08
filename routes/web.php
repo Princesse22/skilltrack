@@ -1,116 +1,81 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\FormateurController;
+use App\Http\Controllers\FormationController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PartenaireController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', fn() => view('welcome'))->name('welcome');
 
+Route::get('/formations.index', fn() => view('formations.index'))->name('formations.index');
+Route::get('/formations.paiement', fn() => view('formations.paiement'))->name('formations.paiement');
+Route::get('/formations.suivref', fn() => view('formations.suivref'))->name('formations.suivref');
+//route des champs du header
+Route::get('/mentors', fn() => view('mentors'))->name('mentors');
+Route::get('/blog', fn() => view('blog'))->name('blog');
+Route::get('/profile', fn() => view('profile'))->name('profile');
+Route::get('/contact', fn() => view('contact'))->name('contact');
 
-// Routes pour les pages (à implémenter plus tard)
-Route::get('/formations.index', function () {
-    return view('formations.index');
-})->name('formations.index');
-// modalites de formation
-Route::get('/formations.paiement', function()
-{
-    return view('formations.paiement');
-})->name('formations.paiement');
-
-//suivre formations
-Route::get('/formations.suivref', function()
-{
-    return view('formations.suivref');
-})->name('formations.suivref');
-
-Route::get('/mentors', function () {
-    return view('mentors');
-})->name('mentors');
-
-Route::get('/blog', function () {
-    return view('blog');
-})->name('blog');
-
+// Inscription / Connexion
 Route::get('register-login', [UsersController::class, 'showRegisterLogin'])->name('register-login');
- Route::post('/register',[UsersController::class, 'register'])->name('register');
- Route::post('login', [UsersController::class, 'login'])->name('login');
-
- // code de verification via mail
-
-Route::get('/auth/emailVerify', [UsersController::class, 'emailVerify'])->name('auth.emailVerify');
- // Vérification du code saisi par l'utilisateur
-Route::post('/auth/verifyCode', [UsersController::class, 'verifyCode'])->name('auth.verifyCode');
-
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
-
-Route::get('/partner', function () {
-    return view('partner');
-})->name('partner');
-
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
-
-// Newsletter subscription
-Route::post('/newsletter/subscribe', function () {
-    // Logic to handle newsletter subscription
-    return redirect()->back()->with('success', 'Successfully subscribed to newsletter!');
-})->name('newsletter.subscribe');
-
-//devenir partenaire
-Route::get('/partenaire.index',function(){
-    return view('partenaire.index');
-})->name('partenaire.index');
-// dashbord partenaire
-Route::get('/partenaire.dashboard',function(){
-    return view('partenaire.dashboard');
-})->name('partenaire.dashboard');
-
-Route::get('/user.dashborad',function(){
-    return view('user.dashboard');
-})->name('user.dashboard');
-
-Route::get('/admin.dashboard',function(){
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-Route::get('/dashboard', [RoleController::class, 'redirectDashboard'])
-    ->middleware('auth')
-    ->name('dashboard');
-    //prendre une formation
-Route::get('/admin/formation/{id}', [AdminController::class, 'voirFormation'])
-     ->name('admin.formation.detail')
-     ->middleware('auth');
-
-//route pour remplir la formation
-Route::get('/formations.editerformation', function()
-{
-    return view('formations.editerformation');
-})->name('formations.editerformation');
-
-//deconnexion
+Route::post('/register', [UsersController::class, 'register'])->name('register');
+Route::post('/login', [UsersController::class, 'login'])->name('login');
 Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
 
-// Voir détail formation
+// Vérification email
+Route::get('/auth/emailVerify', [UsersController::class, 'emailVerify'])->name('auth.emailVerify');
+Route::post('/auth/verifyCode', [UsersController::class, 'verifyCode'])->name('auth.verifyCode');
+
+// Newsletter
+Route::post('/newsletter/subscribe', function () {
+    return redirect()->back()->with('success', 'Abonnement réussi !');
+})->name('newsletter.subscribe');
+
+// Dashboard selon rôle
+Route::get('/dashboard', [RoleController::class, 'redirectDashboard'])->middleware('auth')->name('dashboard');
+Route::get('/user.dashboard', fn() => view('user.dashboard'))->name('user.dashboard');
+Route::get('/admin.dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
+
+// Devenir partenaire  page (GET) et soumission formulaire (POST) séparées
+Route::get('/partenaire/index', fn() => view('partenaire.index'))->name('partenaire.index');
+Route::get('/partenaire.dashboard', fn() => view('partenaire.dashboard'))->name('partenaire.dashboard');
+
+// Formulaire formateur
+Route::post('/formateur/inscription', [FormateurController::class, 'registerFormateur'])
+     ->name('formateur.register')
+     ->middleware('auth');
+
+// Formulaire formation
+Route::post('/formation/soumettre', [FormationController::class, 'soumettreFormation'])
+     ->name('formation.submit')
+     ->middleware('auth');
+
+// Éditeur de formation
+Route::get('/formations.editerformation', fn() => view('formations.editerformation'))->name('formations.editerformation');
+
+// Admin - plus de doublon
 Route::get('/admin/formation/{id}', [AdminController::class, 'voirFormation'])
      ->name('admin.formation.detail')
      ->middleware('auth');
 
-// ✅ AJOUTER — Valider une formation
 Route::post('/admin/formation/{id}/valider', [AdminController::class, 'valideFormation'])
      ->name('admin.formation.valider')
      ->middleware('auth');
 
-// ✅ AJOUTER — Rejeter une formation
 Route::post('/admin/formation/{id}/rejeter', [AdminController::class, 'rejeterFormation'])
      ->name('admin.formation.rejeter')
      ->middleware('auth');
 
-// ✅ AJOUTER — l'import du AdminController en haut du fichier
-use App\Http\Controllers\AdminController;
+     //
+
+// Affichage du formulaire et du dashboard partenaire
+
+Route::get('/partenaire.dashboard', fn() => view('partenaire.dashboard'))->name('partenaire.dashboard')->middleware('auth');
+
+// UNIQUE ROUTE POST pour l'enregistrement complet via Laravel
+Route::post('/partenaire/soumettre', [PartenaireController::class, 'soumettreTout'])
+     ->name('partenaire.soumettre')
+     ->middleware('auth');

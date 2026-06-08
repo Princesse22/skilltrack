@@ -3,27 +3,51 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Formation extends Model
 {
+    protected $table = 'formations';
+
     protected $fillable = [
+        'user_id',
         'titre',
         'description',
-        'duree',
-        'prix',
-        'devise',
-        'remuneration',
+        'categorie',
+        'niveau',
+        'langue',
+        'duree_lecon',
+        'duree_totale',
         'nombre_lecons',
         'programme',
-        'langue',
+        'public_cible',
+        'objectifs',
+        'competences',
+        'prerequis',
+        'prix',
+        'devise',
+        'reduction',
+        'type_remuneration',
+        'partage_formateur',
+        'score_minimum',
         'image',
         'video',
+        'statut',
     ];
-public function formateur()  // Une formation appartient à un formateur
-{
-    return $this->belongsTo(Formateur::class, 'formateur_id');
-}
 
+    protected $casts = [
+        'competences' => 'array',
+        'prerequis'   => 'array',
+    ];
+
+    // Une formation appartient à un utilisateur
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Une formation appartient à un formateur (via user_id)
+    public function formateur()
+    {
+        return $this->belongsTo(Formateur::class, 'user_id', 'user_id');
+    }
 }

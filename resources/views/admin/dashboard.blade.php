@@ -708,16 +708,74 @@ html,body{height:100%;font-family:var(--font);background:#f0f2f5;color:var(--gra
       <h3>Ajouter un utilisateur</h3>
       <button class="modal-close" onclick="closeModal('modal-add-user')">✕</button>
     </div>
-    <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem">
-      ${[['Nom complet','text','Jean Dupont'],['Email','email','jean@email.com'],['Téléphone','tel','+237 6XX XXX XXX']].map(([l,t,p])=>`
-      <div><label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">${l}</label>
-      <input type="${t}" placeholder="${p}" class="filter-input" style="width:100%"></div>`).join('')}
-      <div>
-        <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Rôle</label>
-        <select class="filter-select" style="width:100%"><option>Apprenant</option><option>Formateur</option><option>Partenaire</option><option>Admin</option></select>
+    <form method="POST" action="{{ route('admin.utilisateur.ajouter') }}" enctype="multipart/form-data">
+      @csrf
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Nom complet -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Nom complet</label>
+          <input type="text" name="nom" placeholder="Jean Dupont" class="filter-input" style="width:100%" required>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Email</label>
+          <input type="email" name="email" placeholder="jean@email.com" class="filter-input" style="width:100%" required>
+        </div>
+
+        <!-- Téléphone -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Téléphone</label>
+          <input type="tel" name="telephone" placeholder="+237 6XX XXX XXX" class="filter-input" style="width:100%">
+        </div>
+
+        <!-- Date de naissance -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Date de naissance</label>
+          <input type="date" name="date_naissance" class="filter-input" style="width:100%">
+        </div>
+
+        <!-- Années d'expérience -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Années d'expérience</label>
+          <input type="number" name="annees_experience" placeholder="0" class="filter-input" style="width:100%" min="0">
+        </div>
+
+        <!-- Photo de profil -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Photo de profil</label>
+          <input type="file" name="photo_profil" class="filter-input" style="width:100%; padding: .3rem .5rem" accept="image/*">
+        </div>
+
+        <!-- Photo du diplôme -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Photo du diplôme</label>
+          <input type="file" name="photo_diplome" class="filter-input" style="width:100%; padding: .3rem .5rem" accept="image/*">
+        </div>
+
+        <!-- Bibliographie / Biographie -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Biographie</label>
+          <textarea name="bibliographie" rows="3" placeholder="Présentez-vous..." class="filter-input" style="width:100%; resize: vertical;"></textarea>
+        </div>
+
+        <!-- Rôle -->
+        <div>
+          <label style="font-size:.75rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:.3rem">Rôle</label>
+          <select name="role" class="filter-select" style="width:100%">
+            <option value="apprenant">Apprenant</option>
+            <option value="formateur">Formateur</option>
+            <option value="partenaire">Partenaire</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:.5rem">
+          Créer le compte
+        </button>
       </div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:.5rem">Créer le compte</button>
-    </div>
+    </form>
   </div>
 </div>
 

@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Formateur extends Model
 {
+    protected $table = 'formateurs'; 
+
     protected $fillable = [
         'user_id',
         'nom',
-        'telephone',
+        'phone',
         'photo_profil',
         'photo_diplome',
         'annees_experience',
@@ -19,19 +19,16 @@ class Formateur extends Model
         'date_naissance',
         'statut',
     ];
-//un utilisateur peu avoir plusieurs formations dans la table formateur
-        public function Users()
-        {
-            //un utilisateur peut
-            return $this->belongsTo(Users::class);
-        }
 
-        public function formation()
-        {
-            //avoir plusieurs formations
-            return $this->hasMany(Formation::class);
-        }
+    // Un formateur appartient à un User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-
-
+    // Un formateur a plusieurs formations
+    public function formations()
+    {
+        return $this->hasMany(Formation::class, 'user_id', 'user_id');
+    }
 }
